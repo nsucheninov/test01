@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westeurope"
+    },
+    "omsWorkspaceRegion": {
+      "value": "westeurope"
+    },
+    "dashboardName": {
+      "value": "Power Monitoring"
+    },
+    "emailAddress": {
+      "value": "nsucheninov@gmail.com"
+    },
+    "dcimAccountNo": {
+      "value": "1"
+    },
+    "dcimIBX": {
+      "value": "CH1"
+    },
+    "dcimUserName": {
+      "value": "aandruschenko"
+    },
+    "dcimPassword": {
+      "value": "Guardian-59!1"
+    },
+    "dcimClientId": {
+      "value": "pzP1YhV8HXrat1DiaSbGNfLvCkbWagGv"
+    },
+    "dcimClientSecret": {
+      "value": "mBIkWqA3YxdT0weG"
+    },
+    "smsCountryCode": {
+      "value": "1"
+    },
+    "smsPhoneNumber": {
+        "value": "(202) 555-0183"
+    },
+    "voiceCountryCode": {
+        "value": "1"
+    }
+  }
+}
