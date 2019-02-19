@@ -21,16 +21,16 @@
       "value": "CH1"
     },
     "dcimUserName": {
-      "value": "aandruschenko"
+      "value": "demo01"
     },
     "dcimPassword": {
-      "value": "Guardian-59!1"
+      "value": "password"
     },
     "dcimClientId": {
-      "value": "pzP1YhV8HXrat1DiaSbGNfLvCkbWagGv"
+      "value": "0"
     },
     "dcimClientSecret": {
-      "value": "mBIkWqA3YxdT0weG"
+      "value": "a"
     },
     "smsCountryCode": {
       "value": "1"
