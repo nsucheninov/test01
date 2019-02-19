@@ -1,0 +1,42 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsWorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Assign a name for the Log Analytic Workspace Name"
+            }
+        },
+        "omsWorkspaceRegion": {
+            "type": "string",
+            "metadata": {
+                "description": "Specify the region for your Workspace"
+            }
+        },
+        "omsWorkspaceApi": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "omsWorkspaceSku": "pergb2018"
+    },
+    "resources": [
+        {
+            "apiVersion": "[parameters('omsWorkspaceApi')]",
+            "location": "[parameters('omsWorkspaceRegion')]",
+            "name": "[parameters('omsWorkspaceName')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "comments": "Log Analytics workspace",
+            "tags": {
+                "Source": "QuickstartTemplates"
+            },
+            "properties": {
+                "sku": {
+                    "name": "[variables('omsWorkspaceSku')]"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

@@ -1,0 +1,292 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsWorkspaceName": {
+            "type": "string"
+        },
+        "dashboardName": {
+            "type": "string"
+        },
+        "dcimAccountNo": {
+            "type": "string"
+        },
+        "dcimIBX": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "omsWorkspaceName": "[parameters('omsWorkspaceName')]",
+        "dashboardName": "[parameters('dashboardName')]",
+        "dcimAccountNo": "[parameters('dcimAccountNo')]",
+        "dcimIBX": "[parameters('dcimIBX')]",
+        "view": [
+            "Alerts",
+            "Power Consumption"
+        ],
+        "dashboardId": "[resourceId('Microsoft.Portal/dashboards', parameters('dashboardName'))]"
+    },
+    "resources": [
+    {
+        "name": "[replace(variables('dashboardName'), ' ', '-')]",
+        "type": "Microsoft.Portal/dashboards",
+        "apiVersion": "2015-08-01-preview",
+        "location": "[resourceGroup().location]",
+        "tags": {
+            "hidden-title": "[variables('dashboardName')]"
+        },
+        "properties": {
+            "lenses": {
+                "0": {
+                    "order": 0,
+                    "parts": {
+                        "0": {
+                            "position": {
+                                "x": 0,
+                                "y": 0,
+                                "rowSpan": 4,
+                                "colSpan": 3
+                            },
+                            "metadata": {
+                                "inputs": [],
+                                "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                                "settings": {
+                                    "content": {
+                                        "settings": {
+                                            "content": "[concat('<img width=\"50\" src=\"https://blog.equinix.com/wp-content/themes/scotch-child/img/EQ-FORTRESS-CircleR-RGB.png\"/>\n____\n__Account No: ', variables('dcimAccountNo'), '__\n\n__IBX: ', variables('dcimIBX'), '__\n\nFollow the <a href=\"https://www.equinix.com/locations/\" target=\"_blank\">link</a> to get more info about data centers\n____')]",
+                                            "title": "EQUINIX",
+                                            "subtitle": "Power Consumption"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "1": {
+                            "position": {
+                                "x": 3,
+                                "y": 0,
+                                "rowSpan": 3,
+                                "colSpan": 3
+                            },
+                            "metadata": {
+                                "inputs": [
+                                    {
+                                        "name": "id",
+                                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().Name, '/providers/Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'), '/views/', variables('view')[0])]"
+
+                                    }
+                                ],
+                                "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/ViewTileIFramePart"
+                            }
+                        },
+                        "2": {
+                            "position": {
+                                "x": 6,
+                                "y": 0,
+                                "rowSpan": 3,
+                                "colSpan": 9
+                            },
+                            "metadata": {
+                                "inputs": [
+                                    {
+                                        "name": "ComponentId",
+                                        "value": {
+                                            "SubscriptionId": "[subscription().subscriptionId]",
+                                            "ResourceGroup": "[resourceGroup().name]",
+                                            "Name": "[parameters('omsWorkspaceName')]",
+                                            "ResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().name, '/providers/microsoft.operationalinsights/workspaces/', parameters('omsWorkspaceName'))]"
+                                        }
+                                    },
+                                    {
+                                        "name": "Query",
+                                        "value": "union (print \"\"), (Alert | summarize Count=count() by AlertSeverity, bin(TimeGenerated, 1d)) | sort by TimeGenerated | render barchart kind=unstacked \n"
+                                    },
+                                    {
+                                        "name": "Dimensions",
+                                        "value": {
+                                            "xAxis": {
+                                                "name": "TimeGenerated",
+                                                "type": "DateTime"
+                                            },
+                                            "yAxis": [
+                                                {
+                                                    "name": "Count",
+                                                    "type": "Int64"
+                                                }
+                                            ],
+                                            "splitBy": [
+                                                {
+                                                    "name": "AlertSeverity",
+                                                    "type": "String"
+                                                }
+                                            ],
+                                            "aggregation": "Sum"
+                                        }
+                                    },
+                                    {
+                                        "name": "Version",
+                                        "value": "1.0"
+                                    },
+                                    {
+                                        "name": "DashboardId",
+                                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().Name, '/providers/Microsoft.Portal/dashboards/', variables('dashboardId'))]"
+                                    },
+                                    {
+                                        "name": "PartId",
+                                        "value": "[concat('part3-', uniqueString(variables('dashboardId')))]"
+                                    },
+                                    {
+                                        "name": "PartTitle",
+                                        "value": "Analytics"
+                                    },
+                                    {
+                                        "name": "PartSubTitle",
+                                        "value": "[parameters('omsWorkspaceName')]"
+                                    },
+                                    {
+                                        "name": "resourceTypeMode",
+                                        "value": "workspace"
+                                    },
+                                    {
+                                        "name": "ControlType",
+                                        "value": "AnalyticsChart"
+                                    },
+                                    {
+                                        "name": "SpecificChart",
+                                        "value": "GroupedBar"
+                                    }
+                                ],
+                                "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                "settings": {
+                                    "content": {
+                                        "PartTitle": "Alerts",
+                                        "PartSubTitle": "Distributed over time"
+                                    }
+                                },
+                                "asset": {
+                                    "idInputName": "ComponentId",
+                                    "type": "ApplicationInsights"
+                                }
+                            }
+                        },
+                        "3": {
+                            "position": {
+                                "x": 0,
+                                "y": 4,
+                                "rowSpan": 3,
+                                "colSpan": 3
+                            },
+                            "metadata": {
+                                "inputs": [
+                                    {
+                                        "name": "id",
+                                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().Name, '/providers/Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'), '/views/', variables('view')[1])]"
+
+                                    }
+                                ],
+                                "type": "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/ViewTileIFramePart"
+                            }
+                        },
+                        "4": {
+                            "position": {
+                                "x": 3,
+                                "y": 3,
+                                "rowSpan": 4,
+                                "colSpan": 12
+                            },
+                            "metadata": {
+                                "inputs": [
+                                    {
+                                        "name": "ComponentId",
+                                        "value": {
+                                            "SubscriptionId": "[subscription().subscriptionId]",
+                                            "ResourceGroup": "[resourceGroup().name]",
+                                            "Name": "[parameters('omsWorkspaceName')]",
+                                            "ResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().name, '/providers/microsoft.operationalinsights/workspaces/', parameters('omsWorkspaceName'))]"
+                                        }
+                                    },
+                                    {
+                                        "name": "Query",
+                                        "value": "let current = EqxDcimPowerType_CL | summarize AggregatedValue=max(kva_d) by bin(TimeGenerated, 5m) | project TimeGenerated, Name=\"kva\", Value=AggregatedValue;\r\nlet contractual = EqxDcimPowerType_CL | summarize AggregatedValue=max(contractualKva_d) by bin(TimeGenerated, 5m) | project TimeGenerated, Name=\"contractualKva\", Value=AggregatedValue;\r\nunion (print \"\"), contractual, current | sort by TimeGenerated | render timechart \r\n"
+                                    },
+                                    {
+                                        "name": "Dimensions",
+                                        "value": {
+                                            "xAxis": {
+                                                "name": "TimeGenerated",
+                                                "type": "DateTime"
+                                            },
+                                            "yAxis": [
+                                                {
+                                                    "name": "Value",
+                                                    "type": "Double"
+                                                }
+                                            ],
+                                            "splitBy": [
+                                                {
+                                                    "name": "Name",
+                                                    "type": "String"
+                                                }
+                                            ],
+                                            "aggregation": "Sum"
+                                        }
+                                    },
+                                    {
+                                        "name": "Version",
+                                        "value": "1.0"
+                                    },
+                                    {
+                                        "name": "DashboardId",
+                                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().Name, '/providers/Microsoft.Portal/dashboards/', variables('dashboardId'))]"
+                                    },
+                                    {
+                                        "name": "PartId",
+                                        "value": "[concat('part2-', uniqueString(variables('dashboardId')))]"
+                                    },
+                                    {
+                                        "name": "PartTitle",
+                                        "value": "Analytics"
+                                    },
+                                    {
+                                        "name": "PartSubTitle",
+                                        "value": "[parameters('omsWorkspaceName')]"
+                                    },
+                                    {
+                                        "name": "resourceTypeMode",
+                                        "value": "workspace"
+                                    },
+                                    {
+                                        "name": "ControlType",
+                                        "value": "AnalyticsChart"
+                                    },
+                                    {
+                                        "name": "SpecificChart",
+                                        "value": "Line"
+                                    },
+                                    {
+                                        "name": "TimeRange",
+                                        "isOptional": true
+                                    }
+                                ],
+                                "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                                "settings": {
+                                    "content": {
+                                        "PartTitle": "Power Consumption",
+                                        "PartSubTitle": "Trend"
+                                    }
+                                },
+                                "asset": {
+                                    "idInputName": "ComponentId",
+                                    "type": "ApplicationInsights"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "metadata": {
+            }
+        }
+    }
+    ]
+}
