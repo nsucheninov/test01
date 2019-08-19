@@ -19,5 +19,6 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     action: 'create'
     target: '$(Build.SourceVersion)'
-    tagSource: 'auto'
+    tagSource: 'manual'
+    tag: 'bla bla tag'
     compareWith: 'lastFullRelease'
