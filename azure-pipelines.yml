@@ -10,15 +10,12 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: echo Hello, world!
+- script: ls -la
   displayName: 'Run a one-line script'
 
 - task: GitHubRelease@0
   inputs:
     gitHubConnection: 'SNS GitHub'
-    repositoryName: 'nsucheninov/Azure'
-    action: 'edit'
-    target: '4836cb34b673cce36a203197766e1b852c507cba'
-    tagSource: 'Git tag'
-    tag: '1.0'
-    assetUploadMode: 'replace'
+    repositoryName: nsucheninov/Azure
+    tagSource: manual
+    tag: $(Build.BuildNumber)
