@@ -16,6 +16,6 @@ steps:
 - task: GitHubRelease@0
   inputs:
     gitHubConnection: 'SNS GitHub'
-    repositoryName: nsucheninov/Azure
+    repositoryName: nsucheninov/test01
     tagSource: manual
     tag: $(Build.BuildNumber)
