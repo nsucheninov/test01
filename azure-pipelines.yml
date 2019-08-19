@@ -16,7 +16,7 @@ steps:
 - task: GitHubRelease@0
   inputs:
     gitHubConnection: 'SNS GitHub'
-    repositoryName: 'Azure'
+    repositoryName: 'nsucheninov/Azure'
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'manual'
