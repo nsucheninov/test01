@@ -1,0 +1,100 @@
+[2019/07/16, 16:46:23.491,  INFO, 00003564] Config Folder Path: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\RuntimeSettings Log Folder :C:\WindowsAzure\Logs\
+[2019/07/16, 16:46:23.522,  INFO, 00003564] Inside readHandlerEnvFields
+[2019/07/16, 16:46:23.553,  INFO, 00003564] Inside getLatestConfigFilePath
+[2019/07/16, 16:46:23.569,  INFO, 00003564] Config dirC:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\RuntimeSettings\*.settings
+
+[2019/07/16, 16:46:23.569,  INFO, 00003564] Latest config file :0.settings
+[2019/07/16, 16:46:23.584,  INFO, 00003564] Config File path:C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\RuntimeSettings\0.settings
+
+[2019/07/16, 16:46:23.600,  INFO, 00003564] HandlerConfig file {"runtimeSettings":[{"handlerSettings":{"publicSettings":{"PluginsToEnable":["VFPlugin"], "DisableRestServer":true}}}]}
+[2019/07/16, 16:46:23.600,  INFO, 00003564] Got the key disablerestserver value 1
+[2019/07/16, 16:46:23.616,  INFO, 00003564] Got the key pluginstoenable
+[2019/07/16, 16:46:23.647,  INFO, 00003564] Insert plugin:VFPlugin
+
+[2019/07/16, 16:46:23.662,  INFO, 00003564] Enqueued the Service worker thread
+[2019/07/16, 16:46:23.662,  INFO, 00003568] Going to populate metadata for plugins.
+[2019/07/16, 16:46:23.756,  INFO, 00003568] Going to get package store location.
+[2019/07/16, 16:46:23.772,  INFO, 00003568] Successfully returned default package location: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins
+[2019/07/16, 16:46:23.787,  INFO, 00003568] PackageStore Location in PopulatePluginMetadataFromStore: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins.
+[2019/07/16, 16:46:23.803,  INFO, 00003568] PackageStore Location in GetPluginCount: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins.
+[2019/07/16, 16:46:23.834,  INFO, 00003568] Obtained plugin directory: VFPlugin.
+[2019/07/16, 16:46:23.866,  INFO, 00003568] Received plugin count as: 1
+[2019/07/16, 16:46:23.866,  INFO, 00003568] Going to process directory: .
+[2019/07/16, 16:46:23.881,  INFO, 00003568] Going to process directory: ..
+[2019/07/16, 16:46:23.881,  INFO, 00003568] Going to process directory: VFPlugin
+[2019/07/16, 16:46:23.881,  INFO, 00003568] Going to populate information for plugin: VFPlugin.
+[2019/07/16, 16:46:23.897,  INFO, 00003568] Obtained plugin path: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin
+[2019/07/16, 16:46:23.975,  INFO, 00003568] Creating new plugin metadata objects, count :1
+
+[2019/07/16, 16:46:23.975,  INFO, 00003568] Successfully populated plugins metadata
+[2019/07/16, 16:46:24.006,  INFO, 00003568] Going to parse plugin manifest file:C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml
+[2019/07/16, 16:46:24.022,  INFO, 00003568] Going to load xml from C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml
+
+[2019/07/16, 16:46:24.022,  INFO, 00003568] Xml content: <?xml version="1.0"?>
+<PluginManifest Name="VFPlugin" Version="1.0.0.1" Type="Remote">
+	<Description>Mellanox Driver Installer</Description>
+	<BlockRoleStartOnUnhealthy>True</BlockRoleStartOnUnhealthy>
+	<CodePackage Name="code" Version="1.0.0.1" TargetOSFamily="Windows">
+		<EntryPoint>
+			<Program>VFPlugin.exe</Program>
+			<RestartOnExit>False</RestartOnExit>
+		</EntryPoint>
+	</CodePackage>
+	<ConfigFile Name="config.xml" Version="1.0.0.1"/>
+</PluginManifest>
+
+[2019/07/16, 16:46:24.022,  INFO, 00003568] Retrieved 2 nodes from C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml. 
+
+[2019/07/16, 16:46:24.037,  INFO, 00003568] Node 0 -> Name: xml. 
+
+[2019/07/16, 16:46:24.037,  INFO, 00003568] Node 1 -> Name: PluginManifest. 
+
+[2019/07/16, 16:46:24.037,  INFO, 00003568] Located plugin manifest in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml. 
+
+[2019/07/16, 16:46:24.053,  INFO, 00003568] Plugin Name:VFPlugin
+
+[2019/07/16, 16:46:24.053,  INFO, 00003568] Variant clear return status 0
+[2019/07/16, 16:46:24.053,  INFO, 00003568] File C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml -> Node PluginManifest -> ChildNode -> Description. 
+
+[2019/07/16, 16:46:24.069,  INFO, 00003568] File C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml -> Node PluginManifest -> ChildNode -> BlockRoleStartOnUnhealthy. 
+
+[2019/07/16, 16:46:24.100,  INFO, 00003568] BlockRoleStartOnUnhealthy in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml is True 
+
+[2019/07/16, 16:46:24.131,  INFO, 00003568] File C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml -> Node PluginManifest -> ChildNode -> CodePackage. 
+
+[2019/07/16, 16:46:24.147,  INFO, 00003568] Located first code package C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml. 
+
+[2019/07/16, 16:46:24.162,  INFO, 00003568] Located an entry point for code package in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml. 
+
+[2019/07/16, 16:46:24.178,  INFO, 00003568] Located a program for entry point in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml.... 
+
+[2019/07/16, 16:46:24.194,  INFO, 00003568] childname of entrypoint Program. 
+
+[2019/07/16, 16:46:24.225,  INFO, 00003568] Program name in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml is VFPlugin.exe.. 
+
+[2019/07/16, 16:46:24.225,  INFO, 00003568] Located a program for entry point in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml.... 
+
+[2019/07/16, 16:46:24.241,  INFO, 00003568] childname of entrypoint RestartOnExit. 
+
+[2019/07/16, 16:46:24.241,  INFO, 00003568] Restart Status in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml is False 
+
+[2019/07/16, 16:46:24.256,  INFO, 00003568] File C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\manifest.xml -> Node PluginManifest -> ChildNode -> ConfigFile. 
+
+[2019/07/16, 16:46:24.272,  INFO, 00003568] Monitor/Start job objects
+[2019/07/16, 16:46:24.272,  INFO, 00003568] Kernel received entrypoint VFPlugin.exe in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\code
+[2019/07/16, 16:46:24.272,  INFO, 00003568] Check jobobject for plugin VFPlugin.exe
+[2019/07/16, 16:46:24.287,  INFO, 00003568] Going to create jobobject with name VFPlugin.exe
+[2019/07/16, 16:46:24.287,  INFO, 00003568] Job object created with name VFPlugin.exe....
+[2019/07/16, 16:46:24.287,  INFO, 00003568] Going to apply cpu and memory limits on job object with name VFPlugin.exe....
+[2019/07/16, 16:46:24.303,  INFO, 00003568] return value of QueryInformationJobObject is 1  LastERror=0
+[2019/07/16, 16:46:24.303,  INFO, 00003568] return value of JobObjectExtendedLimitInformation is 1  LastERror=0
+[2019/07/16, 16:46:24.303,  INFO, 00003568] Going to attach process to job object with name VFPlugin.exe....
+[2019/07/16, 16:46:24.303,  INFO, 00003568] Creating process for following exe: C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\code\VFPlugin.exe
+[2019/07/16, 16:46:24.319,  INFO, 00003568] Assigning process C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\code\VFPlugin.exe to jobobject
+[2019/07/16, 16:46:24.334,  INFO, 00003568] Successfully assigned process C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\code\VFPlugin.exe to jobobject
+[2019/07/16, 16:46:24.334,  INFO, 00003568] AquariusSvc doing work. Timeout 180000 (milliseconds)
+[2019/07/16, 16:49:24.351,  INFO, 00003568] Monitor/Start job objects
+[2019/07/16, 16:49:24.351,  INFO, 00003568] Kernel received entrypoint VFPlugin.exe in C:\WindowsAzure\WindowsAzureNetAgent_1.0.0.143\WindowsAzureNetAgent\Plugins\VFPlugin\code
+[2019/07/16, 16:49:24.366,  INFO, 00003568] Check jobobject for plugin VFPlugin.exe
+[2019/07/16, 16:49:24.366,  INFO, 00003568] Plugin VFPlugin.exe in running state
+[2019/07/16, 16:49:24.366,  INFO, 00003568] AquariusSvc doing work. Timeout 3600000 (milliseconds)
