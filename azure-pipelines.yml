@@ -17,8 +17,8 @@ steps:
   inputs:
     gitHubConnection: 'SNS GitHub'
     repositoryName: 'nsucheninov/Azure'
-    action: 'create'
+    action: 'edit'
     target: '$(Build.SourceVersion)'
-    tagSource: 'manual'
-    tag: 'bla bla tag'
-    compareWith: 'lastFullRelease'
+    tagSource: 'Git tag'
+    tag: '1.0'
+    assetUploadMode: 'replace'
