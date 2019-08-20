@@ -19,13 +19,7 @@ steps:
       echo Pushing...
       git config --global user.email "nsucheninov@viacode.com"
       git config --global user.name "Nikolai"
-      git checkout master
-      git status
-      git add --all
-      git status
-      git commit -m 'test push'
-      git status
+      pwd
+      ls -al
       git remote add test1 https://$(GitHubPAT2)@github.com/nsucheninov/Azure.git
-      git status
-      git push test1 head:refs/heads/master
-      git status
+      git push test1 HEAD:master
