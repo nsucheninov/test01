@@ -16,7 +16,9 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      echo Write your commands here
+      echo Pushing...
+      git config --global user.email "nsucheninov@viacode.com"
+      git config --global user.name "Nikolai"
       git remote -v add test1 https://$(GitHubPAT2)@github.com/nsucheninov/Azure.git
       git add .
       git commit -m 'test push'
