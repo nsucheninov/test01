@@ -13,9 +13,8 @@ steps:
 - script: ls -la
   displayName: 'Run a one-line script'
 
-- task: GitHubRelease@0
+- task: CmdLine@2
   inputs:
-    gitHubConnection: 'SNS GitHub'
-    repositoryName: nsucheninov/test01
-    tagSource: manual
-    tag: $(Build.BuildNumber)
+    script: |
+      echo Write your commands here
+      git status
