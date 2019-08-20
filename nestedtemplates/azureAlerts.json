@@ -1,0 +1,178 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string"
+        },
+        "omsWorkspaceName": {
+            "type": "string"
+        },
+        "functionAppName": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string"
+        },
+        "smsCountryCode": {
+            "type": "string"
+        },
+        "smsPhoneNumber": {
+            "type": "string"
+        },
+        "voiceCountryCode": {
+            "type": "string"
+        },
+        "voicePhoneNumber": {
+            "type": "string"
+        },
+        "omsLogTypeCL": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "location": "[parameters('location')]",
+        "scheduledQueryRulesApiVersion": "2018-04-16",
+        "actionGroup": {
+            "name": "[concat('actionGroup-', uniqueString(resourceGroup().id))]",
+            "shortName": "POWER",
+            "emailReceivers": [
+            {
+                "name": "NotifyBy_-EmailAction-",
+                "emailAddress": "[parameters('emailAddress')]"
+            }
+            ],
+            "smsReceivers": [
+            {
+                "name": "NotifyBy_-SMSAction-",
+                "countryCode": "[parameters('smsCountryCode')]",
+                "phoneNumber": "[replace(replace(replace(replace(parameters('smsPhoneNumber'), ' ', ''), '-', ''), '(', ''), ')', '')]"
+            }
+            ],
+            "voiceReceivers": [
+            {
+                "name": "NotifyBy_-VoiceAction-",
+                "countryCode": "[parameters('voiceCountryCode')]",
+                "phoneNumber": "[replace(replace(replace(replace(parameters('voicePhoneNumber'), ' ', ''), '-', ''), '(', ''), ')', '')]"
+            }
+            ]
+        },
+        "actionGroupIds": [
+            "[resourceId('Microsoft.Insights/actionGroups', variables('actionGroup').name)]"
+        ],
+        "alertSourceBaseId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().Name)]",
+        "alertTagBase": "[concat('hidden-link:', variables('alertSourceBaseId'))]",
+        "alertRelId": {
+            "insights": "[concat('/providers/microsoft.insights/components/', parameters('functionAppName'))]",
+            "OperationalInsights": "[concat('/providers/Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+        },
+        "alerts": [
+            {
+                "name": "Authentication failed",
+                "displayName": "Authentication failed",
+                "description": "Authentication failed",
+                "alertRelId": "[variables('alertRelId').insights]",
+                "sourceQuery": "traces | where customDimensions.LogLevel == \"Critical\" and customDimensions.prop__Operation == \"Authentication\" and customDimensions.prop__Code == \"401\"",
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 5
+                },
+                "action": {
+                    "severity": 0,
+                    "customEmailSubject": "Authentication failed",
+                    "throttlingInMin": 60,
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 0,
+                        "metricTriggerExist": false,
+                        "metricTrigger": {}
+                    }
+                }
+            },
+            {
+                "name": "Power Consumption Threshold Exceeded",
+                "displayName": "Power Consumption Threshold Exceeded",
+                "description": "Power Consumption Threshold Exceeded",
+                "alertRelId": "[variables('alertRelId').OperationalInsights]",
+                "sourceQuery": "[concat(parameters('omsLogTypeCL'), ' | summarize AggregatedValue=max(percentageKva_d) by bin(TimeGenerated, 5m)')]",
+                "schedule": {
+                    "frequencyInMinutes": 5,
+                    "timeWindowInMinutes": 5
+                },
+                "action": {
+                    "severity": 0,
+                    "customEmailSubject": "Power Consumption Threshold Exceeded",
+                    "throttlingInMin": 60,
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 75,
+                        "metricTriggerExist": true,
+                        "metricTrigger": {
+                            "thresholdOperator": "GreaterThan",
+                            "threshold": 0,
+                            "metricTriggerType": "Consecutive",
+                            "metricColumn": "AggregatedValue"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "resources": [
+        {
+            "name": "[variables('actionGroup').name]",
+            "type": "Microsoft.Insights/actionGroups",
+            "apiVersion": "2018-03-01",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "[variables('actionGroup').shortName]",
+                "enabled": true,
+                "emailReceivers": "[variables('actionGroup').emailReceivers]",
+                "smsReceivers": "[if(equals(variables('actionGroup').smsReceivers[0].phoneNumber, ''), json('null'), variables('actionGroup').smsReceivers)]",
+                "voiceReceivers": "[if(equals(variables('actionGroup').voiceReceivers[0].phoneNumber, ''), json('null'), variables('actionGroup').voiceReceivers)]"
+            }
+        },
+        {
+            "name": "[variables('alerts')[copyIndex()].name]",
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "[variables('scheduledQueryRulesApiVersion')]",
+            "location": "[variables('location')]",
+            "tags": {
+                "[concat(variables('alertTagBase'), variables('alerts')[copyIndex()].alertRelId)]": "Resource"
+            },
+            "copy": {
+                "name": "alert",
+                "mode": "Parallel",
+                "count": "[length(variables('alerts'))]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Insights/actionGroups/', variables('actionGroup').name)]"
+            ],
+            "properties": {
+                "description": "[variables('alerts')[copyIndex()].description]",
+                "displayName": "[variables('alerts')[copyIndex()].displayName]",
+                "enabled": "true",
+                "source": {
+                    "query": "[variables('alerts')[copyIndex()].sourceQuery]",
+                    "dataSourceId": "[concat(variables('alertSourceBaseId'), variables('alerts')[copyIndex()].alertRelId)]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": "[variables('alerts')[copyIndex()].schedule]",
+                "action": {
+                    "severity": "[variables('alerts')[copyIndex()].action.severity]",
+                    "aznsAction": {
+                        "actionGroup": "[variables('actionGroupIds')]",
+                        "emailSubject": "[variables('alerts')[copyIndex()].action.customEmailSubject]"
+                    },
+                    "throttlingInMin": "[variables('alerts')[copyIndex()].action.throttlingInMin]",
+                    "trigger": {
+                        "thresholdOperator": "[variables('alerts')[copyIndex()].action.trigger.thresholdOperator]",
+                        "threshold": "[variables('alerts')[copyIndex()].action.trigger.threshold]",
+                        "metricTrigger": "[if(variables('alerts')[copyIndex()].action.trigger.metricTriggerExist, variables('alerts')[copyIndex()].action.trigger.metricTrigger, json('null'))]"
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
+        }
+    ]
+}

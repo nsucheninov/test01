@@ -1,0 +1,237 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "functionAppName": {
+            "type": "string"
+        },
+        "functionAppApiVersion": {
+            "type": "string"
+        },
+        "AZURE_KEY_VAULT_NAME": {
+            "type": "string"
+        },
+        "OMS_LOG_TYPE": {
+            "type": "string"
+        },
+        "OMS_TIME_STAMP_FIELD": {
+            "type": "string"
+        },
+        "OMS_CUSTOMER_ID_SECRET_NAME": {
+            "type": "string"
+        },
+        "OMS_SHARED_KEY_SECRET_NAME": {
+            "type": "string"
+        },
+        "DCIM_USERNAME_SECRET_NAME": {
+            "type": "string"
+        },
+        "DCIM_PASSWORD_SECRET_NAME": {
+            "type": "string"
+        },
+        "DCIM_CLIENT_ID_SECRET_NAME": {
+            "type": "string"
+        },
+        "DCIM_CLIENT_SECRET_SECRET_NAME": {
+            "type": "string"
+        },
+        "AUTH_TOKEN_SECRET_NAME": {
+            "type": "string"
+        },
+        "REFRESH_TOKEN_SECRET_NAME": {
+            "type": "string"
+        },
+        "DCIM_ACCOUNT_NUMBER": {
+            "type": "string"
+        },
+        "DCIM_IBX_NAME": {
+            "type": "string"
+        },
+       "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where OMS views required by this template are located"
+            }
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Parameters required to access _omsViewsLocation."
+            }
+        }
+    },
+    "variables": {
+        "storageAccountName": "[concat('storage', uniquestring(subscription().subscriptionId, resourceGroup().id))]",
+        "storageAccountType":  "Standard_LRS",
+        "storageAccountid": "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "functionAppName": "[concat('functionApp-', uniquestring(subscription().subscriptionId, resourceGroup().id))]",
+        "hostingPlanName": "[concat('hostingPlan-', uniquestring(subscription().subscriptionId, resourceGroup().id))]",
+        "packageName": "collector01.zip"
+    },    
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2016-12-01",
+            "location": "[parameters('location')]",
+            "kind": "Storage",
+            "sku": {
+              "name": "[variables('storageAccountType')]"
+            }
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "kind": "other",
+            "name": "[variables('functionAppName')]",
+            "apiVersion": "2015-05-01",
+            "location": "[parameters('location')]",
+            "tags": {
+                "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('functionAppName'))]": "Resource"
+            },
+            "scale": null,
+            "properties": {
+                "Application_Type": "web",
+                "ApplicationId": "[parameters('functionAppName')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2015-04-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "name": "[variables('hostingPlanName')]",
+                "computeMode": "Dynamic",
+                "sku": "Dynamic"
+            }
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('functionAppName')]",
+            "location": "[parameters('location')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "kind": "functionapp",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Insights/components', variables('functionAppName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionAppName'))]"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~1"
+                        },
+                        {
+                            "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                            "value": "6.5.0"
+                        },
+                        {
+                            "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+                            "value": true
+                        },
+                        {
+                            "name": "AzureWebJobsDisableHomepage",
+                            "value": true
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('functionAppName'))).InstrumentationKey]"
+                        },
+                        {
+                            "name": "AZURE_KEY_VAULT_NAME",
+                            "value": "[parameters('AZURE_KEY_VAULT_NAME')]"
+                        },
+                        {
+                            "name": "OMS_LOG_TYPE",
+                            "value": "[parameters('OMS_LOG_TYPE')]"
+                        },
+                        {
+                            "name": "OMS_TIME_STAMP_FIELD",
+                            "value": "[parameters('OMS_TIME_STAMP_FIELD')]"
+                        },
+                        {
+                            "name": "OMS_CUSTOMER_ID_SECRET_NAME",
+                            "value": "[parameters('OMS_CUSTOMER_ID_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "OMS_SHARED_KEY_SECRET_NAME",
+                            "value": "[parameters('OMS_SHARED_KEY_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "DCIM_USERNAME_SECRET_NAME",
+                            "value": "[parameters('DCIM_USERNAME_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "DCIM_PASSWORD_SECRET_NAME",
+                            "value": "[parameters('DCIM_PASSWORD_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "DCIM_CLIENT_ID_SECRET_NAME",
+                            "value": "[parameters('DCIM_CLIENT_ID_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "DCIM_CLIENT_SECRET_SECRET_NAME",
+                            "value": "[parameters('DCIM_CLIENT_SECRET_SECRET_NAME')]"
+                        },
+                        {
+                            "name": "AUTH_TOKEN_SECRET_NAME",
+                            "value": "[parameters('AUTH_TOKEN_SECRET_NAME')]"
+                        },
+                        {   
+                            "name": "REFRESH_TOKEN_SECRET_NAME",
+                            "value": "[parameters('REFRESH_TOKEN_SECRET_NAME')]"
+                        },
+                            {
+                            "name": "DCIM_ACCOUNT_NUMBER",
+                            "value": "[parameters('DCIM_ACCOUNT_NUMBER')]"
+                        },
+                        {
+                            "name": "DCIM_IBX_NAME",
+                            "value": "[parameters('DCIM_IBX_NAME')]"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                    "name": "MSDeploy",
+                    "type": "Extensions",
+                    "apiVersion": "2015-02-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+                    ],
+                    "properties": {
+                        "packageUri": "[uri(parameters('_artifactsLocation'), concat('functions/', variables('packageName'), parameters('_artifactsLocationSasToken')))]"
+                    }
+                }
+            ]
+        }    
+    ]
+}

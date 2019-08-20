@@ -1,0 +1,66 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsWorkspaceRegion": {
+            "type": "string"
+        },
+        "omsWorkspaceName": {
+            "type": "string"
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where OMS views required by this template are located"
+            }
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Parameters required to access _omsViewsLocation."
+            }
+        }        
+    },
+    "variables": {
+        "omsviews": [
+                "Alerts.omsview",
+                "PowerConsumption.omsview"
+        ]
+    },    
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2016-02-01",
+            "name": "[replace(variables('omsviews')[copyIndex()], ' ', '_')]",
+            "copy": {
+                "name": "viewCopy",
+                "count": "[length(variables('omsviews'))]",
+                "mode": "parallel"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('omsview/', variables('omsviews')[copyIndex()], parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "resourcegroup": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "location": {
+                        "value": "[parameters('omsWorkspaceRegion')]"
+                    },
+                    "subscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    },
+                    "workspace": {
+                        "value": "[parameters('omsWorkspaceName')]"
+                    },
+                    "workspaceapiversion": {
+                        "value": "2017-03-03-preview"
+                    }
+                }
+            }
+        }
+    ]
+}
