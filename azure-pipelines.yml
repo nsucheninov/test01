@@ -17,6 +17,6 @@ steps:
   inputs:
     script: |
       echo Write your commands here
-      git remote add test1 https://$(GitHubPAT2)@github.com/nsucheninov/Azure.git
-      git fetch origin
+      git fetch -v origin
+      git remote -v add test1 https://$(GitHubPAT2)@github.com/nsucheninov/Azure.git
       git push -v --all test1 master
