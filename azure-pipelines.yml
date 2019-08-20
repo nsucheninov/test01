@@ -17,5 +17,5 @@ steps:
   inputs:
     script: |
       echo Write your commands here
-      git remote add test1 https://nsucheninov:$(GitHubPAT)github.com/nsucheninov/Azure.git
+      git remote add test1 https://$(GitHubPAT2)github.com/nsucheninov/Azure.git
       git push test1 --all
