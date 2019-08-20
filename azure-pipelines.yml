@@ -18,4 +18,6 @@ steps:
     script: |
       echo Write your commands here
       git remote -v add test1 https://$(GitHubPAT2)@github.com/nsucheninov/Azure.git
+      git add .
+      git commit -m 'test push'
       git push -v test1 head:refs/heads/master
