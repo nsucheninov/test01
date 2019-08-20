@@ -17,4 +17,4 @@ steps:
   inputs:
     script: |
       echo Write your commands here
-      git remote show nsucheninov/Azure
+      git remote show https://github.com/nsucheninov/Azure.git
